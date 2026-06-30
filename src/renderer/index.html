@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
+  <title>File Tree Generator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="titlebar">
+    <div class="brand">
+      <span class="logo">🌳</span>
+      <span class="brand-name">File Tree Generator</span>
+    </div>
+    <div class="titlebar-spacer"></div>
+  </header>
+
+  <main class="layout">
+    <!-- Sidebar / controls -->
+    <aside class="sidebar">
+      <section class="card">
+        <h2 class="card-title">Source folder</h2>
+        <button id="pickFolder" class="btn btn-primary btn-block">📁 Choose folder…</button>
+        <div id="folderPath" class="path-display muted">No folder selected</div>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title">Options</h2>
+
+        <label class="field">
+          <span>Tree style</span>
+          <select id="style">
+            <option value="unicode">Unicode (├──)</option>
+            <option value="ascii">ASCII (|--)</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Max depth <small class="muted">(0 = unlimited)</small></span>
+          <input id="maxDepth" type="number" min="0" max="50" value="0" />
+        </label>
+
+        <label class="toggle">
+          <input id="foldersFirst" type="checkbox" checked />
+          <span>Folders first</span>
+        </label>
+        <label class="toggle">
+          <input id="showHidden" type="checkbox" />
+          <span>Show hidden files (dotfiles)</span>
+        </label>
+        <label class="toggle">
+          <input id="showSizes" type="checkbox" />
+          <span>Show file sizes</span>
+        </label>
+        <label class="toggle">
+          <input id="trailingSlash" type="checkbox" checked />
+          <span>Trailing slash on folders</span>
+        </label>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title">Ignore folders &amp; files</h2>
+
+        <div class="ignore-input-row">
+          <input id="ignoreInput" type="text" placeholder="Name or pattern, e.g. *.log" />
+          <button id="ignoreAdd" class="btn" title="Add pattern">Add</button>
+        </div>
+
+        <button id="ignoreAddFolder" class="btn btn-ghost btn-block">＋ Ignore a folder…</button>
+
+        <div id="ignoreTags" class="tags" aria-live="polite"></div>
+
+        <div class="presets">
+          <span class="preset-label muted">Quick add:</span>
+          <button class="preset" data-val="node_modules">node_modules</button>
+          <button class="preset" data-val=".git">.git</button>
+          <button class="preset" data-val=".DS_Store">.DS_Store</button>
+          <button class="preset" data-val="dist">dist</button>
+          <button class="preset" data-val="build">build</button>
+          <button class="preset" data-val="*.log">*.log</button>
+          <button class="preset" data-val="__pycache__">__pycache__</button>
+          <button class="preset" data-val=".venv">.venv</button>
+        </div>
+
+        <button id="ignoreClear" class="link-btn muted">Clear all</button>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title">Export</h2>
+        <div class="format-group">
+          <label class="chip"><input type="checkbox" class="fmt" value="txt" checked /> TXT</label>
+          <label class="chip"><input type="checkbox" class="fmt" value="png" /> PNG</label>
+          <label class="chip"><input type="checkbox" class="fmt" value="pdf" /> PDF</label>
+        </div>
+
+        <label class="field">
+          <span>File name</span>
+          <input id="baseName" type="text" value="file-tree" />
+        </label>
+
+        <label class="field">
+          <span>Image / PDF theme</span>
+          <select id="exportTheme">
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+          </select>
+        </label>
+
+        <button id="pickOutput" class="btn btn-block">📂 Choose output folder…</button>
+        <div id="outputPath" class="path-display muted">No output folder selected</div>
+
+        <button id="exportBtn" class="btn btn-success btn-block" disabled>⬇ Export</button>
+      </section>
+    </aside>
+
+    <!-- Preview -->
+    <section class="preview">
+      <div class="preview-toolbar">
+        <div class="stats" id="stats">
+          <span class="stat"><strong id="statDirs">0</strong> folders</span>
+          <span class="stat"><strong id="statFiles">0</strong> files</span>
+          <span class="stat" id="statSizeWrap" hidden><strong id="statSize">0 B</strong> total</span>
+        </div>
+        <div class="preview-actions">
+          <button id="copyBtn" class="btn btn-ghost" disabled>📋 Copy</button>
+        </div>
+      </div>
+      <div class="preview-body">
+        <pre id="treeOutput" class="tree-output"><span class="placeholder">Select a folder to preview its file tree…</span></pre>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
