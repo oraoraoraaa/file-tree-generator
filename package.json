@@ -3,7 +3,10 @@
   "productName": "File Tree Generator",
   "version": "1.0.0",
   "description": "A beautiful desktop tool to generate the file tree of a selected folder and export it as TXT, PNG, or PDF.",
-  "author": "file-tree-generator",
+  "author": {
+    "name": "file-tree-generator",
+    "email": "rinalic39@gmail.com"
+  },
   "license": "MIT",
   "main": "src/main/main.js",
   "scripts": {
